@@ -6,12 +6,19 @@ import math
 import heapq
 
 from typing import Tuple, List, Dict, Optional, Any, Callable
-from config import (
-    MANHATTAN_NUM_UNBINNED,
-    MANHATTAN_PEAK_MAX_COUNT,
-    MANHATTAN_PEAK_PVAL_THRESHOLD,
-    MANHATTAN_PEAK_SPRAWL_DIST,
-    MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD,
+# from config import (
+#     MANHATTAN_NUM_UNBINNED,
+#     MANHATTAN_PEAK_MAX_COUNT,
+#     MANHATTAN_PEAK_PVAL_THRESHOLD,
+#     MANHATTAN_PEAK_SPRAWL_DIST,
+#     MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD,
+# )
+from ..conf import (
+    get_manhattan_num_unbinned,
+    get_manhattan_peak_max_count,
+    get_manhattan_peak_pval_threshold,
+    get_manhattan_peak_sprawl_dist,
+    get_manhattan_peak_variant_counting_pval_threshold
 )
 
 BIN_LENGTH = int(3e6)
@@ -103,8 +110,10 @@ class Binner:
         )
         self._num_significant_in_current_peak = 0  # num variants stronger than manhattan_peak_variant_counting_pval_threshold
         assert (
-            MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
-            < MANHATTAN_PEAK_PVAL_THRESHOLD
+            # MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
+            # < MANHATTAN_PEAK_PVAL_THRESHOLD
+            get_manhattan_peak_variant_counting_pval_threshold()
+            < get_manhattan_peak_pval_threshold()
         )  # counting must be stricter than peak-extending
 
     def process_variant(self, variant: Dict[str, Any]) -> None:
@@ -129,21 +138,24 @@ class Binner:
                     0.1  # this makes 200-400 bins for a y-axis extending up to 20-40.
                 )
 
-        if variant["pval"] < MANHATTAN_PEAK_PVAL_THRESHOLD:  # part of a peak
+        if variant["pval"] < get_manhattan_peak_pval_threshold():  # part of a peak
+            # if variant["pval"] < MANHATTAN_PEAK_PVAL_THRESHOLD:  # part of a peak
             if self._peak_best_variant is None:  # open a new peak
                 self._peak_best_variant = variant
                 self._peak_last_chrpos = (variant["chrom"], variant["pos"])
                 self._num_significant_in_current_peak = (
                     1
-                    if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
+                    # if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
+                    if variant["pval"] < get_manhattan_peak_variant_counting_pval_threshold()
                     else 0
                 )
             elif (
                 self._peak_last_chrpos[0] == variant["chrom"]
-                and self._peak_last_chrpos[1] + MANHATTAN_PEAK_SPRAWL_DIST
+                and self._peak_last_chrpos[1] + get_manhattan_peak_sprawl_dist()
                 > variant["pos"]
             ):  # extend current peak
-                if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD:
+                # if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD:
+                if variant["pval"] < get_manhattan_peak_variant_counting_pval_threshold():
                     self._num_significant_in_current_peak += 1
                 self._peak_last_chrpos = (variant["chrom"], variant["pos"])
                 if variant["pval"] >= self._peak_best_variant["pval"]:
@@ -157,7 +169,8 @@ class Binner:
                 )
                 self._num_significant_in_current_peak = (
                     1
-                    if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
+                    # if variant["pval"] < MANHATTAN_PEAK_VARIANT_COUNTING_PVAL_THRESHOLD
+                    if variant["pval"] < get_manhattan_peak_variant_counting_pval_threshold()
                     else 0
                 )
                 self._maybe_peak_variant(self._peak_best_variant)
@@ -170,7 +183,8 @@ class Binner:
         self._peak_pq.add_and_keep_size(
             variant,
             variant["pval"],
-            size=MANHATTAN_PEAK_MAX_COUNT,
+            # size=MANHATTAN_PEAK_MAX_COUNT,
+            size=get_manhattan_peak_max_count(),
             popped_callback=self._maybe_bin_variant,
         )
 
@@ -178,7 +192,8 @@ class Binner:
         self._unbinned_variant_pq.add_and_keep_size(
             variant,
             variant["pval"],
-            size=MANHATTAN_NUM_UNBINNED,
+            # size=MANHATTAN_NUM_UNBINNED,
+            size=get_manhattan_num_unbinned(),
             popped_callback=self._bin_variant,
         )
 
