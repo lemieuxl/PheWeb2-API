@@ -4,9 +4,9 @@
 [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/xiaoh11/pheweb2-api?sort=semver)](https://hub.docker.com/r/xiaoh11/pheweb2-api)
 
 
-**Please cite our preprint:** 
+**Please cite our paper:** 
 
-Bellavance, J., Xiao, H., Chang, L., Kazemi, M., Wickramasinghe, S., Mayhew, A.J., Raina, P., VandeHaar, P., Taliun, D., & Gagliano Taliun, S.A. (2025). Exploring and visualizing stratified genome-wide association study results with PheWeb 2. https://doi.org/10.21203/rs.3.rs-7463215/v1
+Bellavance, J., Xiao, H., Chang, L., Kazemi, M., Wickramasinghe, S., Mayhew, A.J., Raina, P., VandeHaar, P., Taliun, D., & Gagliano Taliun, S.A. (2026). Exploring and visualizing stratified GWAS results with PheWeb2. _Nature Genetics_ [https://doi.org/10.21203/rs.3.rs-7463215/v1](https://doi.org/10.1038/s41588-025-02469-8)
 
 This is an implementation of the data model and API for [PheWeb2](https://github.com/GaglianoTaliun-Lab/PheWeb2/tree/main) — an enhanced version of the original [PheWeb](https://github.com/statgen/pheweb) web-based tool for interactive querying, visualizing, and sharing summary-level results from genome-wide and phenome-wide association studies (GWAS/PheWAS), which offers intuitive and efficient support for stratified analysis results. PheWeb2 decouples the data model and API from the user interface (UI) to improve code maintenance and reusability and allow results querying by other external resources and applications.
 
